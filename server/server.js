@@ -3,17 +3,20 @@ const path = require('path');
 // Import the ApolloServer class
 const {ApolloServer} = require('apollo-server-express');
 
+// Import authmiddleware to verify token
+const {authMiddleware} = require('./utils/auth');
+
 // Import typeDefs and resolvers - GraphQL schema
 const {typeDefs, resolvers} = require('./schemas');
 
 
 const db = require('./config/connection');
-const routes = require('./routes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 // use ApolloServer
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({typeDefs, resolvers, context: authMiddleware});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
