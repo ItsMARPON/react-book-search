@@ -16,13 +16,14 @@ const resolvers = {
     },
   },
   Mutation: {
-    login: async (parent, args) => {
-      const user = await User.findOne({ email: args.email });
+    login: async (parent, {email, password}) => {
+      const user = await User.findOne({ email: email });
+
       if (!user) {
         throw new AuthenticationError("Can't find this user");
       }
 
-      const correctPw = await user.isCorrectPassword(args.password);
+      const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
         throw new AuthenticationError("Wrong Password!");
@@ -30,14 +31,11 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    addUser: async (parent, args) => {
-      const user = await User.create(args);
-
-      if (!user) {
-        throw new AuthenticationError("Something is wrong!");
-      }
+    addUser: async (parent, {username, email, password}) => {
+      const user = await User.create({username, email, password});
       const token = signToken(user);
-      return { token, user };
+      return {token, user}
+
     },
     saveBook: async (parent, args, context) => {
       if (context.user) {

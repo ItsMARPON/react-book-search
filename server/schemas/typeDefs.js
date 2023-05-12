@@ -18,7 +18,7 @@ const typeDefs = gql`
     }
     type Auth{
         token: ID!
-        user: User!
+        user: User
     }
     input BookInput{
         authors: [String]
